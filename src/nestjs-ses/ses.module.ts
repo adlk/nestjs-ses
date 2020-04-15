@@ -1,26 +1,26 @@
-import { Module } from '@nestjs/common';
-import { ConfigurationSes } from './configuration';
-import { AKI_KEY, REGION, SECRET } from './tokens/tokens';
+import { Module, DynamicModule } from '@nestjs/common';
+import { ConfigurationSes } from './interfaces/configuration-ses.interface';
+import { SES_CONFIG } from './tokens/tokens';
+import { UtilsService } from './services/utils/utils.service';
 import { SesService } from './services/relay/ses.service';
 
 @Module({})
 export class SesModule {
-  public static forRoot(config: ConfigurationSes) {
+  public static forRoot(config: ConfigurationSes): DynamicModule {
     return {
       module: SesModule,
-      //   controllers: [
-      //     ...controllers,
-      //   ],
       providers: [
-        { provide: AKI_KEY, useValue: config.AKI_KEY },
         {
-          provide: REGION,
-          useValue: config.REGION,
+          provide: SES_CONFIG, useValue: <ConfigurationSes>{
+            AKI_KEY: config.AKI_KEY,
+            SECRET: config.SECRET,
+            REGION: config.REGION
+          }
         },
-        { provide: SECRET, useValue: config.SECRET },
+        UtilsService,
         SesService,
       ],
-      exports: [SesService],
+      exports: [UtilsService, SesService],
     };
   }
 }
