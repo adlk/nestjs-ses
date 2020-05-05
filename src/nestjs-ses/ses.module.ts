@@ -6,16 +6,16 @@ import { SesService } from './services/relay/ses.service';
 
 @Module({})
 export class SesModule {
-  public static forRoot(config: ConfigurationSes): DynamicModule {
+  public static forRoot(config: ConfigurationSes) {
     return {
       module: SesModule,
       providers: [
         {
-          provide: SES_CONFIG, useValue: <ConfigurationSes>{
+          provide: SES_CONFIG, useValue: {
             AKI_KEY: config.AKI_KEY,
             SECRET: config.SECRET,
             REGION: config.REGION
-          }
+          } as ConfigurationSes
         },
         UtilsService,
         SesService,
